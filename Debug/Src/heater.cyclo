@@ -1,0 +1,10 @@
+../Src/heater.c:36:6:HEATER_DIO_On	1
+../Src/heater.c:46:6:HEATER_DIO_Off	1
+../Src/heater.c:56:6:HEATER_DIO_Toggle	1
+../Src/heater.c:67:6:HEATER_DIO_Write	2
+../Src/heater.c:77:26:HEATER_DIO_Read	2
+../Src/heater.c:88:6:PWM_Init	1
+../Src/heater.c:94:6:HEATER_PWM_Init	2
+../Src/heater.c:106:6:PWM_WriteDuty	8
+../Src/heater.c:121:6:HEATER_PWM_WriteDuty	2
+../Src/heater.c:132:7:HEATER_PWM_ReadDuty	2

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basic Form</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div>
+        <label for="temperaturaInput">Nowa wartość temperatury</label><br />
+        <input type="text" id="temperaturaInput" name="temperaturaInput" />
+
+        <button id="submit">submit</button>
+      </div>
+      <div style="display: grid">
+        <button id="connectButton">Connect</button>
+        <div id="portValueContainer">
+          <h2>Read temperatue from Port:</h2>
+          <p id="portValue">No value read yet.</p>
+        </div>
+        <div id="portValueContainer">
+          <h2>Read pwm duty from Port:</h2>
+          <p id="PWMvalue">No value read yet.</p>
+        </div>
+        <div id="portValueContainer">
+          <h2>Current setpoint:</h2>
+          <p id="setpointValue">No value read yet.</p>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div
+        id="chartTemperatureContainer"
+        style="height: 370px; width: 100%"
+      ></div>
+      <div id="chartPWMContainer" style="height: 370px; width: 100%"></div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</html>

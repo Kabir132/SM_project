@@ -181,13 +181,23 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		temp_int = 1000 * temp;
 
-		int pwm_duty_f = (calculate_PID(&PID1, set_temp_f, temp));
+//		float pwm_duty_f = (calculate_PID(&PID1, set_temp_f, temp));
+//
+//		// Saturation
+//		if (pwm_duty_f < 0.0)
+//			pwm_duty_u = 0;
+//		else if (pwm_duty_f > htim9.Init.Period)
+//			pwm_duty_u = htim9.Init.Period + 1;
+//		else
+//			pwm_duty_u = (uint16_t) pwm_duty_f;
+
+		pwm_duty_f = (htim9.Init.Period * calculate_PID(&PID1, set_temp_f, temp));
 
 		// Saturation
 		if (pwm_duty_f < 0.0)
 			pwm_duty_u = 0;
 		else if (pwm_duty_f > htim9.Init.Period)
-			pwm_duty_u = htim9.Init.Period + 1;
+			pwm_duty_u = htim9.Init.Period;
 		else
 			pwm_duty_u = (uint16_t) pwm_duty_f;
 
@@ -213,8 +223,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 		if (duty_cycle < 25) {
 			duty_cycle = 25;
-		} else if (duty_cycle > 45) {
-			duty_cycle = 45;
+		} else if (duty_cycle > 65) {
+			duty_cycle = 65;
 		}
 
 		set_temp_f = duty_cycle;
@@ -225,15 +235,19 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 /* USER CODE END 0 */
 
+/**
+ * @brief  The application entry point.
+ * @retval int
+ */
 int main(void) {
 
 	/* USER CODE BEGIN 1 */
 	// Initialize PID Controller parameters and init data
-	PID1.Kp = 1000;
-	PID1.Ki = 1;
-	PID1.Kd = 0;
-	PID1.Tp = 1.0f / 9000.0f;
-	PID1.N = 0.01f;
+	PID1.Kp = 0.040065189914464;
+	PID1.Ki = 0.000367191052565128;
+	PID1.Kd = 0.32624717337489;
+	PID1.Tp = 1;
+//	PID1.N = 0.01f;
 	PID1.prev_error = 0;
 	PID1.d_prev = 0;
 	PID1.e_prev = 0;

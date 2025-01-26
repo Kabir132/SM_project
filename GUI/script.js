@@ -1,6 +1,7 @@
 let port;
 
 let globalTemperature = 0;
+let setTemp = 0;
 
 async function connectToSerialPort() {
   try {
@@ -21,6 +22,7 @@ async function connectToSerialPort() {
     const portValueElement = document.getElementById("portValue");
     const pwmDutyElement = document.getElementById("PWMvalue");
     const setpointElement = document.getElementById("setpointValue");
+    const errorElement = document.getElementById("errorValue");
 
     while (true) {
       const { value, done } = await reader.read();
@@ -29,16 +31,27 @@ async function connectToSerialPort() {
       }
       message += value;
       if (value.includes("\n")) {
-        const jsonMessage = JSON.parse(message.trim());
-        console.log("Received JSON message:", jsonMessage);
+        try {
+          const jsonMessage = JSON.parse(message.trim());
+          console.log("Received JSON message:", jsonMessage);
 
-        globalTemperature = jsonMessage["temperature"];
+          globalTemperature = jsonMessage["temperature"];
 
-        portValueElement.textContent = jsonMessage["temperature"];
-        pwmDutyElement.textContent = jsonMessage["PID"];
-        setpointElement.textContent = jsonMessage["Setpoint"];
+          portValueElement.textContent = jsonMessage["temperature"];
+          pwmDutyElement.textContent = jsonMessage["PID"];
+          setpointElement.textContent = jsonMessage["Setpoint"];
 
-        message = "";
+          setTemp = jsonMessage["Setpoint"];
+
+          errorElement.textContent = (
+            jsonMessage["temperature"] - jsonMessage["Setpoint"]
+          ).toFixed(3);
+
+          message = "";
+        } catch (error) {
+          console.error("Error parsing JSON message:", error);
+          message = "";
+        }
       }
     }
 
@@ -64,6 +77,9 @@ async function sendDataToSerialPort(data) {
 }
 
 var dataPoints = [];
+var setPointValues = [];
+
+var dataToSave = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   const connectButton = document.getElementById("connectButton");
@@ -73,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
   submitButton.addEventListener("click", (event) => {
     event.preventDefault();
     const temperaturaInput = document.getElementById("temperaturaInput");
+
     const data = temperaturaInput.value;
     sendDataToSerialPort(data);
   });
@@ -81,10 +98,40 @@ document.addEventListener("DOMContentLoaded", () => {
     title: {
       text: "Temperature Graph",
     },
+    axisY: {
+      title: "Temperature (°C)",
+      maximum: 70,
+      minimum: 20,
+      includeZero: true,
+      suffix: " °C",
+    },
+    legend: {
+      cursor: "pointer",
+      itemclick: function (e) {
+        if (
+          typeof e.dataSeries.visible === "undefined" ||
+          e.dataSeries.visible
+        ) {
+          e.dataSeries.visible = false;
+        } else {
+          e.dataSeries.visible = true;
+        }
+        chartTemperature.render();
+      },
+    },
     data: [
       {
         type: "line",
+        showInLegend: true,
+        name: "Temperature",
         dataPoints: dataPoints,
+        lineThickness: 6,
+      },
+      {
+        type: "stepLine",
+        showInLegend: true,
+        name: "Set Point",
+        dataPoints: setPointValues,
       },
     ],
   });
@@ -93,6 +140,13 @@ document.addEventListener("DOMContentLoaded", () => {
   var chartPWM = new CanvasJS.Chart("chartPWMContainer", {
     title: {
       text: "PWM Duty Cycle Graph",
+    },
+    axisY: {
+      title: "Width (%)",
+      maximum: 101,
+      minimum: -1,
+      includeZero: true,
+      suffix: " %",
     },
     data: [
       {
@@ -110,7 +164,9 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(function () {
     if (globalTemperature !== 0) {
       var yValueTemperature = globalTemperature;
+      dataToSave.push(yValueTemperature);
       addData(chartTemperature, dataPoints, yValueTemperature);
+      addData(chartTemperature, setPointValues, parseFloat(setTemp));
     }
   }, 1000);
 

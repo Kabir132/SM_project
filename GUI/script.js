@@ -1,7 +1,26 @@
+//Global variables
 let port;
 
 let globalTemperature = 0;
 let setTemp = 0;
+
+var dataPoints = [];
+var setPointValues = [];
+
+var dataToSave = [];
+
+//Save data to file
+document.getElementById("saveData").addEventListener("click", () => {
+  const blob = new Blob([dataToSave.join("\n")], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "data.txt";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
 
 async function connectToSerialPort() {
   try {
@@ -75,11 +94,6 @@ async function sendDataToSerialPort(data) {
     console.error("Serial port is not open");
   }
 }
-
-var dataPoints = [];
-var setPointValues = [];
-
-var dataToSave = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   const connectButton = document.getElementById("connectButton");

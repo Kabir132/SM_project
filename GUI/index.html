@@ -8,30 +8,30 @@
   </head>
   <body>
     <div class="container">
+      <button id="connectButton">Connect</button>
+      <button id="saveData">Save data to file</button>
       <div>
         <label for="temperaturaInput">Nowa wartość temperatury</label><br />
         <input type="text" id="temperaturaInput" name="temperaturaInput" />
 
         <button id="submit">submit</button>
       </div>
-      <div style="display: grid">
-        <button id="connectButton">Connect</button>
-        <div id="portValueContainer">
-          <h2>Read temperatue from Port:</h2>
-          <p id="portValue">No value read yet.</p>
-        </div>
-        <div id="portValueContainer">
-          <h2>Read pwm duty from Port:</h2>
-          <p id="PWMvalue">No value read yet.</p>
-        </div>
-        <div id="portValueContainer">
-          <h2>Current setpoint:</h2>
-          <p id="setpointValue">No value read yet.</p>
-        </div>
-        <div id="portValueContainer">
-          <h2>Current error:</h2>
-          <p id="errorValue">No value read yet.</p>
-        </div>
+
+      <div id="portValueContainer">
+        <h2>Read temperatue from Port:</h2>
+        <p id="portValue">No value read yet.</p>
+      </div>
+      <div id="portValueContainer">
+        <h2>Read pwm duty from Port:</h2>
+        <p id="PWMvalue">No value read yet.</p>
+      </div>
+      <div id="portValueContainer">
+        <h2>Current setpoint:</h2>
+        <p id="setpointValue">No value read yet.</p>
+      </div>
+      <div id="portValueContainer">
+        <h2>Current error:</h2>
+        <p id="errorValue">No value read yet.</p>
       </div>
     </div>
     <div class="container">
